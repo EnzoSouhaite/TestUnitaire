@@ -9,6 +9,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
     public int NbLines { get; }
     public int NbColumns { get; }
     
+    // ===== Tests01 : Création de matrices =====
     public Matrix(int nbLines, int nbColumns)
     {
         NbLines = nbLines;
@@ -48,6 +49,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         }
     }
 
+    // ===== Matrice identité =====
     public static Matrix<T> Identity(int size)
     {
         Matrix<T> result = new Matrix<T>(size, size);
@@ -85,6 +87,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         return true;
     }
 
+    // ===== Multiplication par un scalaire =====
     public void Multiply(T scalar)
     {
         for (int i = 0; i < NbLines; i++)
@@ -121,6 +124,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         return result;
     }
 
+    // ===== Addition et soustraction =====
     public void Add(Matrix<T> other)
     {
         if (NbLines != other.NbLines || other.NbColumns != NbColumns)
@@ -156,6 +160,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         return result;
     }
     
+    // ===== Multiplication de deux matrices =====
     public Matrix<T> Multiply(Matrix<T> other)
     {
         if (this.NbColumns != other.NbLines)
@@ -191,6 +196,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         return result;
     }
 
+    // ===== Transposée =====
     public Matrix<T> Transpose()
     {
         Matrix<T> result = new Matrix<T>(NbColumns, NbLines);
@@ -212,6 +218,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         return result;
     }
 
+    // ===== Matrice augmentée =====
     public static Matrix<T> GenerateAugmentedMatrix(Matrix<T> m1, Matrix<T> m2)
     {
         Matrix<T> result = new Matrix<T>(m1.NbLines, m1.NbColumns + m2.NbColumns);
@@ -232,7 +239,8 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         }
         return result;
     }
-
+    
+    // ===== Découpage de matrice =====    
         public (Matrix<T>, Matrix<T>) Split(int columnIndex)
         {
             Matrix<T> m1 = new Matrix<T>(NbLines, columnIndex + 1);
@@ -255,6 +263,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
             return (m1, m2);
         }
 
+        // ===== Inversion par réduction de lignes =====
         public Matrix<T> InvertByRowReduction()
         {
             Matrix<T> identity = Matrix<T>.Identity(NbColumns);
@@ -275,6 +284,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
             return result;
         }
         
+        // ===== Sous-matrice =====
         public Matrix<T> SubMatrix(int lineToRemove, int columnToRemove)
         {
             Matrix<T> result = new Matrix<T>(NbLines-1, NbColumns-1);
@@ -303,6 +313,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
             return result;
         }
 
+        // ===== Tests13 : Déterminants =====
         public static T Determinant(Matrix<T> m)
         {
             if (m.NbLines == 1)
@@ -327,6 +338,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
             return sum;
         }
 
+        // ===== Matrice adjointe =====
         public Matrix<T> Adjugate()
         {
             Matrix<T> result = new Matrix<T>(NbLines, NbColumns);
@@ -349,6 +361,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
             return result;
         }
 
+        // ===== Inversion par déterminant =====
         public Matrix<T> InvertByDeterminant()
         {
             T det =  Determinant(this);
@@ -369,6 +382,7 @@ public class Matrix<T> where T : INumber<T>, IMinMaxValue<T>
         }
 }
 
+// ===== Opérations élémentaires sur les matrices =====
 public static class MatrixElementaryOperations
 {
     public static void SwapLines<T>(Matrix<T> m, int line1, int line2) where T : INumber<T>, IMinMaxValue<T>
@@ -433,6 +447,7 @@ public static class MatrixElementaryOperations
     }
 }
 
+// ===== Algorithme de réduction de lignes =====
 public static class MatrixRowReductionAlgorithm
 {
     public static (Matrix<T>, Matrix<T>) Apply<T>(Matrix<T> m1, Matrix<T> m2, bool throwOnZeroColumn = false) where T : INumber<T>, IMinMaxValue<T>
@@ -483,6 +498,7 @@ public static class MatrixRowReductionAlgorithm
     }
 }
 
+// ===== Exceptions =====
 public class MatrixRowReductionException : Exception
 {
     
@@ -508,6 +524,7 @@ public class MatrixScalarZeroException : Exception
     
 }
 
+// ===== Vector4 =====
 public class Vector4
 {
     public float x, y, z, w;
@@ -542,6 +559,7 @@ public class Vector4
     }
 }
 
+// ===== Vector3 =====
 public class Vector3
 {
     public float x, y, z;
@@ -581,6 +599,7 @@ public class Vector3
     }
 }
 
+// ===== Transform =====
 public class Transform
 {
     private Vector3 _localPosition;
@@ -612,6 +631,8 @@ public class Transform
         result[2, 3] = position.z;
         return result;
     }
+    
+    // ===== Transform : position locale =====
     public Vector3 LocalPosition
     {
         get { return _localPosition; }
@@ -622,6 +643,7 @@ public class Transform
         }
     }
     
+    // ===== Transform : échelle locale =====
     public Vector3 LocalScale
     {
         get { return _localScale; }
@@ -636,6 +658,7 @@ public class Transform
         get { return _localTranslationMatrix; }
     }
     
+    // ===== Tests18 : Matrices de rotation X, Y, Z =====
     private Matrix<float> BuildRotationXMatrix(float degrees)
     {
         float radians = degrees * MathF.PI / 180f;
@@ -687,6 +710,7 @@ public class Transform
         return result;
     }
     
+    // ===== Tests18 : LocalRotation =====
     public Vector3 LocalRotation
     {
         get { return _localRotation; }
@@ -700,6 +724,7 @@ public class Transform
         }
     }
     
+    // ===== Tests21 et Tests22 : WorldPosition =====
     public Vector3 WorldPosition
     {
         get 
@@ -720,6 +745,7 @@ public class Transform
         }
     }
     
+    // ===== Tests21 : SetParent =====
     public void SetParent(Transform parent)
     {
         _parent = parent;
@@ -746,6 +772,7 @@ public class Transform
         get { return _localScaleMatrix; }
     }
     
+    // ===== Tests20 : LocalToWorld / WorldToLocal =====
     public Matrix<float> LocalToWorldMatrix
     {
         get 
@@ -767,6 +794,7 @@ public class Transform
     }
 }
 
+// ===== Quaternion : constructeur et Identity =====
 public struct Quaternion
 {
     public float x, y, z, w;
@@ -784,6 +812,7 @@ public struct Quaternion
         get { return new Quaternion(0, 0, 0, 1); }
     }
 
+    // ===== Quaternion : AngleAxis =====
     public static Quaternion AngleAxis(float degrees, Vector3 axis)
     {
         Vector3 normalizedAxis = axis.Normalized();
@@ -796,6 +825,7 @@ public struct Quaternion
         return new Quaternion(normalizedAxis.x * sin, normalizedAxis.y* sin, normalizedAxis.z* sin, cos);
     }
     
+    // ===== Quaternion : multiplication de deux quaternions =====
     public static Quaternion operator *(Quaternion q1, Quaternion q2)
     {
         float resultW = q1.w*q2.w - q1.x*q2.x - q1.y*q2.y - q1.z*q2.z;
@@ -806,6 +836,7 @@ public struct Quaternion
         return new Quaternion(resultX, resultY, resultZ, resultW);
     }
 
+    // ===== Tests26 : Conjugate / Magnitude / Inverse =====
     public Quaternion Conjugate()
     {
         return new Quaternion(-x, -y, -z, w);
@@ -833,6 +864,8 @@ public struct Quaternion
     
         return new Vector3(result.x, result.y, result.z);
     }
+    
+    // ===== Tests27 Quaternion :  Matrice de rotation =====
     
     public Matrix<float> Matrix
     {
