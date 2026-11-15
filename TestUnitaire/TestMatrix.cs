@@ -724,6 +724,19 @@ public class Transform
         }
     }
     
+    // ===== Tests29 : LocalRotation sous forme de quaternion =====
+    public Quaternion LocalRotationQuaternion
+    {
+        get
+        {
+            return Quaternion.Euler(LocalRotation.x, LocalRotation.y, LocalRotation.z);
+        }
+        set
+        {
+            LocalRotation = value.EulerAngles;
+        }
+    }
+    
     // ===== Tests21 et Tests22 : WorldPosition =====
     public Vector3 WorldPosition
     {
@@ -887,5 +900,34 @@ public struct Quaternion
         
             return result;
         }
+    }
+    
+    // ===== Tests28 : Quaternion -> angles d'Euler =====
+    public Vector3 EulerAngles
+    {
+        get
+        {
+            Matrix<float> m = this.Matrix;
+
+            float xRadians = MathF.Asin(-m[1, 2]);
+            float x = xRadians * 180 / MathF.PI;
+
+            float yRadians = MathF.Atan2(m[0, 2], m[2, 2]);
+            float y = yRadians * 180 / MathF.PI;
+            
+            float zRadians = MathF.Atan2(m[1, 0], m[1, 1]);
+            float z = zRadians * 180 / MathF.PI; 
+
+            return new Vector3(x, y, z);
+        }
+    }
+    
+    public static Quaternion Euler(float x, float y, float z)
+    {
+        Quaternion qRY = Quaternion.AngleAxis(y, new Vector3(0, 1, 0));
+        Quaternion qRX = Quaternion.AngleAxis(x, new Vector3(1, 0, 0));
+        Quaternion qRZ = Quaternion.AngleAxis(z, new Vector3(0, 0, 1));
+        
+        return qRY * qRX * qRZ;
     }
 }
